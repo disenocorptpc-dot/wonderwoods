@@ -103,6 +103,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         items.forEach(item => {
             const el = document.createElement('div');
             el.className = 'list-item';
+
+            // Allow clicking the row to view details
+            el.style.cursor = 'pointer';
+            el.addEventListener('click', (e) => {
+                // If clicking any button inside row, do not trigger row click
+                if (e.target.closest('button')) return;
+                showModal(item);
+            });
+
             const statusClass = item.stock.current < item.stock.minLevel ? 'stock-low' : 'stock-ok';
             const imgId = `img-${item.id}`;
 
@@ -119,9 +128,15 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </div>
             `;
 
-            // Bind Actions
-            el.querySelector('.view-btn').addEventListener('click', () => showModal(item));
-            el.querySelector('.edit-btn').addEventListener('click', () => openEditModal(item));
+            // Bind Actions with stopPropagation
+            el.querySelector('.view-btn').addEventListener('click', (e) => {
+                e.stopPropagation();
+                showModal(item);
+            });
+            el.querySelector('.edit-btn').addEventListener('click', (e) => {
+                e.stopPropagation();
+                openEditModal(item);
+            });
 
             el.querySelector('.delete-btn').addEventListener('click', async (e) => {
                 e.stopPropagation();
@@ -175,6 +190,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         form.material.value = item.materials || '';
 
+        // Populate manufacturing & files safely
         if (item.manufacturing) {
             form.manufacturer.value = item.manufacturing.manufacturer || '';
             form.files.value = item.manufacturing.productionFiles || '';
