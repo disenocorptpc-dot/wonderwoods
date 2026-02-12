@@ -197,12 +197,35 @@ body {
 }
 
 .list-thumb {
-    width: 40px;
-    height: 40px;
+    width: 60px;
+    /* A bit larger */
+    height: 60px;
     border-radius: 6px;
-    object-fit: cover;
-    background: #eee;
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    object-fit: contain;
+    /* Show full image */
+    background: #fff;
+    /* White bg for transparency/padding */
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 2px;
+    /* Small padding */
+}
+
+/* Modal Image Fix */
+.modal-left {
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal-left img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    width: auto;
+    height: auto;
+    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.15));
 }
 
 .item-name {
