@@ -415,14 +415,17 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </div>
 
                 <div class="section-title">Especificaciones</div>
-                <div class="spec-row"><span>Medidas</span> <strong>${data.dimensions.height || '-'} x ${data.dimensions.width || '-'}</strong></div>
-                <div class="spec-row"><span>Profundidad</span> <strong>${data.dimensions.depth || '-'}</strong></div>
+                <div class="spec-row">
+                    <span>Medidas</span> 
+                    <strong>${data.dimensions.width || '-'} x ${data.dimensions.height || '-'} x ${data.dimensions.depth || '-'} cm</strong>
+                </div>
+                <!-- Combined Depth into Measures -->
                 <div class="spec-row"><span>Capacidad</span> <strong>${data.dimensions.capacity || '-'}</strong></div>
                 <div class="spec-row"><span>Material</span> <strong>${data.materials}</strong></div>
 
                 <div class="section-title">Producción</div>
                 <div class="spec-row"><span>Fabricante</span> <strong>${data.manufacturing.manufacturer || '-'}</strong></div>
-                <div class="spec-row"><span>Archivo CAD</span> <a href="${data.manufacturing.productionFiles}" style="color:var(--primary);">Descargar</a></div>
+                <div class="spec-row"><span>Archivo CAD</span> <a href="${data.manufacturing.productionFiles}" target="_blank" rel="noopener noreferrer" style="color:var(--primary);">Descargar</a></div>
                 
                 <div class="section-title">Notas</div>
                 <p style="font-size:0.9rem; color:#666;">${data.comments}</p>
