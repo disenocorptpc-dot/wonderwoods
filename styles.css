@@ -389,3 +389,14 @@ body {
     justify-content: center;
     z-index: 1000;
 }
+
+#closeAddModal {
+    cursor: pointer;
+    position: relative;
+    z-index: 100;
+    font-size: 1.5rem;
+    line-height: 1;
+    background: transparent;
+    border: none;
+    color: white;
+}

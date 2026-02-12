@@ -292,7 +292,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('formModeTitle').innerText = "Agregar Nuevo Artefacto";
             addModal.classList.remove('hidden');
         });
-        document.getElementById('closeAddModal').addEventListener('click', () => addModal.classList.add('hidden'));
+        document.getElementById('closeAddModal').addEventListener('click', (e) => {
+            e.preventDefault(); // Just in case
+            console.log("Cerrando modal...");
+            addModal.classList.add('hidden');
+        });
         addModal.addEventListener('click', (e) => { if (e.target === addModal) addModal.classList.add('hidden'); });
 
         // Form Handle (Add OR Edit)
