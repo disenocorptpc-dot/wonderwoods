@@ -1,0 +1,334 @@
+:root {
+    /* Wonderwoods Paleta "Mística Moderna" */
+
+    /* Morados (Principal/Sidebar) */
+    --primary: #5D3A5D;
+    --primary-light: #886098;
+
+    /* Verdes/Zarcetas (Secundario/Éxito) */
+    --forest: #6FA38B;
+    --forest-dark: #649480;
+
+    /* Azules/Grisáceos (Bordes/Detalles) */
+    --slate: #7595A9;
+    --slate-dark: #58798d;
+
+    /* Dorados/Mostaza (Acento/Acción) */
+    --accent: #E0AC4C;
+    --accent-dim: #C89E23;
+
+    /* Neutros */
+    --bg-body: #FDFCF8;
+    --bg-panel: #FFFFFF;
+    --text-main: #333333;
+    --text-muted: #666666;
+    --border-color: #E0E0E0;
+    /* O un tono slate muy suave */
+
+    --font-main: 'Segoe UI', system-ui, sans-serif;
+
+    --shadow-sm: 0 1px 3px rgba(93, 58, 93, 0.1);
+    --shadow-md: 0 4px 6px rgba(93, 58, 93, 0.1);
+    --radius: 12px;
+}
+
+/* Import Font */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-main);
+    background-color: var(--bg-body);
+    color: var(--text-main);
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* --- Sidebar --- */
+.sidebar {
+    width: 240px;
+    background: #1e2b1f;
+    /* Deep Green/Black */
+    color: #f1f1f1;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+    border-right: 2px solid #8d6e63;
+}
+
+.brand {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 2.5rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    letter-spacing: 1px;
+}
+
+.nav-btn {
+    background: transparent;
+    border: none;
+    width: 100%;
+    padding: 12px 16px;
+    text-align: left;
+    color: #a0b0a0;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: var(--radius);
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.2s ease;
+}
+
+.nav-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+}
+
+.nav-btn.active {
+    background: var(--accent);
+    color: #1e2b1f;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(212, 163, 115, 0.3);
+}
+
+/* --- Main Content --- */
+.content-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: url('https://www.transparenttextures.com/patterns/cream-paper.png'), var(--parchment);
+}
+
+.top-bar {
+    height: 64px;
+    background: var(--bg-panel);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    backdrop-filter: blur(5px);
+}
+
+.top-bar h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--primary);
+}
+
+.search-box input {
+    padding: 8px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    width: 260px;
+    background: #f9f9f9;
+    transition: all 0.2s;
+    font-family: var(--font-main);
+}
+
+.search-box input:focus {
+    width: 320px;
+    outline: none;
+    background: #fff;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(212, 163, 115, 0.1);
+}
+
+.scrollable-content {
+    padding: 2rem;
+    overflow-y: auto;
+    flex: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* --- List View Logic --- */
+.items-list-container {
+    background: var(--bg-panel);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+}
+
+.list-header {
+    display: grid;
+    grid-template-columns: 60px 2fr 1.5fr 1fr 1fr 100px;
+    padding: 12px 20px;
+    background: #f8f9fa;
+    border-bottom: 1px solid var(--border-color);
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.list-item {
+    display: grid;
+    grid-template-columns: 60px 2fr 1.5fr 1fr 1fr 100px;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border-color);
+    align-items: center;
+    transition: background 0.15s;
+    font-size: 0.95rem;
+}
+
+.list-item:hover {
+    background: #fcfcfc;
+}
+
+.list-item:last-child {
+    border-bottom: none;
+}
+
+.list-thumb {
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    object-fit: cover;
+    background: #eee;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.item-name {
+    font-weight: 600;
+    color: var(--primary);
+}
+
+.item-category {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+/* Stock Badge Modern */
+.stock-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    width: fit-content;
+}
+
+.stock-ok {
+    background: #e6f4ea;
+    color: #1e8e3e;
+}
+
+.stock-low {
+    background: #fce8e6;
+    color: #c5221f;
+}
+
+.btn-icon {
+    border: 1px solid var(--border-color);
+    background: transparent;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.btn-icon:hover {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+}
+
+/* --- Inventory Table --- */
+.inventory-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border: 1px solid #d7ccc8;
+}
+
+.inventory-table th {
+    background: #5d4037;
+    color: #fff;
+    font-family: var(--font-main);
+    text-align: left;
+    padding: 15px;
+    font-weight: normal;
+}
+
+.inventory-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+    color: var(--text-main);
+}
+
+.inventory-table tr:hover {
+    background-color: #fafafa;
+}
+
+/* --- Modal --- */
+.modal {
+    background: rgba(44, 24, 16, 0.8);
+    /* Darker backdrop */
+    backdrop-filter: blur(3px);
+}
+
+.modal-content {
+    background: #fffcf5;
+    border: 4px solid var(--primary);
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+}
+
+.modal-left {
+    background: #eefeef;
+    position: relative;
+    border-right: 2px solid #d7ccc8;
+}
+
+.modal-right {
+    padding: 2.5rem;
+}
+
+.close-btn {
+    color: var(--primary);
+    font-weight: bold;
+}
+
+.section-title {
+    color: var(--primary);
+    font-family: var(--font-main);
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 5px;
+    margin-top: 2rem;
+}
+
+.spec-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 0.95rem;
+}
+
+.hidden {
+    display: none;
+}

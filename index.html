@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wonderwoods Catalog</title>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <aside class="sidebar">
+        <div class="brand">
+            <i class="fa-solid fa-tree"></i> Wonderwoods
+        </div>
+        <nav>
+            <button class="nav-btn active" data-tab="catalog">
+                <i class="fa-solid fa-utensils"></i> Catálogo Loza
+            </button>
+            <button class="nav-btn" data-tab="characters">
+                <i class="fa-solid fa-ghost"></i> Personajes
+            </button>
+            <button class="nav-btn" data-tab="inventory">
+                <i class="fa-solid fa-boxes-stacked"></i> Inventario
+            </button>
+        </nav>
+    </aside>
+
+    <main class="content-area">
+        <header class="top-bar">
+            <h2 id="pageTitle">Catálogo de Loza</h2>
+            <div style="display:flex; gap:10px; align-items:center;">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Buscar...">
+                </div>
+                <button id="btnNewItem" class="btn-action"
+                    style="background:var(--accent); color:var(--primary); margin:0; width:auto; padding: 10px 20px;">
+                    <i class="fa-solid fa-plus"></i> Nuevo
+                </button>
+            </div>
+        </header>
+
+        <div id="appContent" class="scrollable-content">
+            <!-- Content Injected Here -->
+        </div>
+    </main>
+
+    <!-- Detail Modal -->
+    <div id="itemModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-left">
+                <img id="modalImg" src="" alt="Detail">
+            </div>
+            <div class="modal-right">
+                <button class="close-btn">&times;</button>
+                <h2 id="modalTitle" style="margin-bottom:1rem; color:#333;">Title</h2>
+                <div id="modalDetails"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Item Modal -->
+    <div id="addModal" class="modal hidden">
+        <div class="modal-content" style="max-width:600px; flex-direction:column; overflow:hidden;">
+            <div
+                style="padding:15px; background:var(--primary); color:#fff; display:flex; justify-content:space-between;">
+                <h3>Agregar Nuevo Artefacto</h3>
+                <button id="closeAddModal"
+                    style="background:none; border:none; color:#fff; cursor:pointer; font-size:1.2rem;">&times;</button>
+            </div>
+            <div style="padding:20px; overflow-y:auto; flex:1;">
+                <form id="addItemForm" style="display:grid; gap:15px;">
+                    <div>
+                        <label>Nombre del Ítem</label>
+                        <input type="text" name="name" required style="width:100%; padding:8px;">
+                    </div>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                        <div>
+                            <label>Categoría</label>
+                            <input type="text" name="category" list="catOptions" style="width:100%; padding:8px;">
+                            <datalist id="catOptions">
+                                <option value="Fun Dishes">
+                                <option value="Main Courses">
+                                <option value="Drinkware">
+                            </datalist>
+                        </div>
+                        <div>
+                            <label>Stock Inicial</label>
+                            <input type="number" name="stock" value="0" style="width:100%; padding:8px;">
+                        </div>
+                    </div>
+                    <div>
+                        <label>Descripción</label>
+                        <textarea name="description" rows="3" style="width:100%; padding:8px;"></textarea>
+                    </div>
+
+                    <div class="section-title" style="margin-top:0;">Ficha Técnica</div>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                        <input type="text" name="dim_h" placeholder="Alto (cm)" style="padding:8px;">
+                        <input type="text" name="dim_w" placeholder="Ancho (cm)" style="padding:8px;">
+                        <input type="text" name="capacity" placeholder="Capacidad" style="padding:8px;">
+                        <input type="text" name="material" placeholder="Material" style="padding:8px;">
+                    </div>
+
+                    <div class="section-title" style="margin-top:0;">Producción</div>
+                    <input type="text" name="manufacturer" placeholder="Fabricante / Proveedor"
+                        style="width:100%; padding:8px;">
+                    <input type="text" name="files" placeholder="Link a Archivos (PDF/ZIP)"
+                        style="width:100%; padding:8px;">
+
+                    <button type="submit" class="btn-action" style="margin-top:10px;">Guardar en Inventario</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="app.js"></script>
+</body>
+
+</html>
