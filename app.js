@@ -485,6 +485,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     function replaceContent(element) {
+        const contentContainer = document.getElementById('appContent');
+        if (!contentContainer) return;
         contentContainer.innerHTML = '';
         contentContainer.appendChild(element);
     }
