@@ -98,10 +98,22 @@
                     </div>
 
                     <div class="section-title" style="margin-top:0;">Ficha Técnica</div>
-                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                        <input type="text" name="dim_h" placeholder="Alto (cm)" style="padding:8px;">
-                        <input type="text" name="dim_w" placeholder="Ancho (cm)" style="padding:8px;">
-                        <input type="text" name="capacity" placeholder="Capacidad" style="padding:8px;">
+                    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px;">
+                        <div>
+                            <label style="font-size:0.8rem; display:block; margin-bottom:4px;">Ancho (cm)</label>
+                            <input type="text" name="dim_w" placeholder="0.0" style="padding:8px; width:100%;">
+                        </div>
+                        <div>
+                            <label style="font-size:0.8rem; display:block; margin-bottom:4px;">Alto (cm)</label>
+                            <input type="text" name="dim_h" placeholder="0.0" style="padding:8px; width:100%;">
+                        </div>
+                        <div>
+                            <label style="font-size:0.8rem; display:block; margin-bottom:4px;">Profundidad</label>
+                            <input type="text" name="dim_d" placeholder="0.0" style="padding:8px; width:100%;">
+                        </div>
+                    </div>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:10px;">
+                        <input type="text" name="capacity" placeholder="Capacidad (ml)" style="padding:8px;">
                         <input type="text" name="material" placeholder="Material" style="padding:8px;">
                     </div>
 
@@ -111,7 +123,14 @@
                     <input type="text" name="files" placeholder="Link a Archivos (PDF/ZIP)"
                         style="width:100%; padding:8px;">
 
-                    <button type="submit" class="btn-action" style="margin-top:10px;">Guardar en Inventario</button>
+                    <div class="section-title">Imagen del Producto</div>
+                    <div
+                        style="background:#f4f4f4; padding:10px; border-radius:4px; border:1px dashed #ccc; text-align:center;">
+                        <input type="file" name="imageUpload" accept="image/*" style="width:100%;">
+                        <small style="display:block; color:#666; margin-top:5px;">Soporta JPG, PNG (Max 1024px)</small>
+                    </div>
+
+                    <button type="submit" class="btn-action" style="margin-top:20px;">Guardar en Inventario</button>
                 </form>
             </div>
         </div>
