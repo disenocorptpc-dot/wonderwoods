@@ -374,7 +374,7 @@ body {
 }
 
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 /* Utility classes for modal overlay */
