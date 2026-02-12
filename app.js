@@ -406,6 +406,14 @@ document.addEventListener('DOMContentLoaded', async () => {
             modalDetails.innerHTML = html;
         } else {
             let html = `
+                <div class="section-title" style="margin-top:0;">Estado</div>
+                <div class="spec-row">
+                    <span>Disponibilidad</span> 
+                    <strong style="color:${data.stock.current < data.stock.minLevel ? '#d32f2f' : '#2e7d32'};">
+                        ${data.stock.status} (${data.stock.current} unid.)
+                    </strong>
+                </div>
+
                 <div class="section-title">Especificaciones</div>
                 <div class="spec-row"><span>Medidas</span> <strong>${data.dimensions.height || '-'} x ${data.dimensions.width || '-'}</strong></div>
                 <div class="spec-row"><span>Profundidad</span> <strong>${data.dimensions.depth || '-'}</strong></div>
