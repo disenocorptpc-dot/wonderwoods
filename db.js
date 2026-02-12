@@ -63,10 +63,19 @@ class WonderDB {
 
     async addItem(item) {
         if (!this.ready) await this.init();
-        // Guardar en el array 'items' del documento maestro
         await updateDoc(this.docRef, {
             items: arrayUnion(item)
         });
+    }
+
+    async updateItem(updatedItem) {
+        if (!this.ready) await this.init();
+        const snap = await getDoc(this.docRef);
+        if (snap.exists()) {
+            const currentItems = snap.data().items || [];
+            const newItems = currentItems.map(i => i.id === updatedItem.id ? updatedItem : i);
+            await updateDoc(this.docRef, { items: newItems });
+        }
     }
 
     async deleteItem(itemId) {

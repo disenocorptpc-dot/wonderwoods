@@ -9,14 +9,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Init DB & Load
     try {
         await db.init();
-        const remoteItems = await db.getItems();
-        if (remoteItems && remoteItems.length > 0) {
-            console.log("Datos cargados de Firebase:", remoteItems.length);
-            tablewareData = remoteItems;
-        } else {
-            console.log("Usando datos locales (Firebase vacío o inaccesible)");
-            tablewareData = localData;
+        let remoteItems = await db.getItems();
+
+        // Seeding Logic
+        if (remoteItems.length === 0) {
+            const hasSeeded = localStorage.getItem('ww_seeded');
+            if (!hasSeeded) {
+                console.log("🌱 Sembrando datos iniciales en la Nube...");
+                for (const item of localData) {
+                    await db.addItem(item);
+                }
+                localStorage.setItem('ww_seeded', 'true');
+                remoteItems = localData;
+            }
         }
+        tablewareData = remoteItems;
+
     } catch (e) {
         console.error("Error cargando DB:", e);
         tablewareData = localData;
@@ -65,7 +73,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     // --- Renderers ---
 
     async function resolveImage(item) {
-        // Helper to get image URL. If it's a DB pointer, fetch base64.
         if (item.image && item.image.startsWith('DB_IMAGE:')) {
             const id = item.image.split(':')[1];
             const content = await db.getImage(id);
@@ -74,7 +81,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         return item.image || 'https://placehold.co/100x100?text=No+Img';
     }
 
-    // We render synchronously first with placeholders, then update images async
     function renderCatalog(filter = '') {
         const items = tablewareData.filter(i => i.name.toLowerCase().includes(filter));
 
@@ -98,8 +104,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             const el = document.createElement('div');
             el.className = 'list-item';
             const statusClass = item.stock.current < item.stock.minLevel ? 'stock-low' : 'stock-ok';
-
-            // Placeholder ID for image to update later
             const imgId = `img-${item.id}`;
 
             el.innerHTML = `
@@ -117,19 +121,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             // Bind Actions
             el.querySelector('.view-btn').addEventListener('click', () => showModal(item));
-            el.querySelector('.edit-btn').addEventListener('click', () => alert('Edit feature coming soon!'));
+            el.querySelector('.edit-btn').addEventListener('click', () => openEditModal(item));
 
             el.querySelector('.delete-btn').addEventListener('click', async (e) => {
                 e.stopPropagation();
                 if (confirm('¿Seguro que deseas eliminar este ítem permanentemente?')) {
-                    // Optimistic update
                     el.style.opacity = '0.5';
                     try {
-                        const searchInput = document.getElementById('searchInput'); // Grab latest reference
                         await db.deleteItem(item.id);
                         tablewareData = tablewareData.filter(i => i.id !== item.id);
                         renderCatalog(searchInput ? searchInput.value : '');
-                        alert('Ítem eliminado');
                     } catch (err) {
                         console.error(err);
                         alert('Error al eliminar');
@@ -138,7 +139,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
             });
 
-            // Async Image Loader
             resolveImage(item).then(url => {
                 const imgEl = el.querySelector(`#${imgId}`);
                 if (imgEl) imgEl.src = url;
@@ -149,6 +149,38 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         container.appendChild(listBody);
         replaceContent(container);
+    }
+
+    // --- Edit Logic ---
+    function openEditModal(item) {
+        const modal = document.getElementById('addModal');
+        const form = document.getElementById('addItemForm');
+        form.reset();
+
+        // Metadata for Edit Mode
+        document.getElementById('editId').value = item.id;
+        document.getElementById('formModeTitle').innerText = "Editar: " + item.name;
+
+        // Fill Fields
+        form.name.value = item.name;
+        form.category.value = item.category;
+        form.stock.value = item.stock.current;
+        form.description.value = item.description;
+
+        if (item.dimensions) {
+            form.dim_h.value = item.dimensions.height || '';
+            form.dim_w.value = item.dimensions.width || '';
+            form.dim_d.value = item.dimensions.depth || '';
+            form.capacity.value = item.dimensions.capacity || '';
+        }
+        form.material.value = item.materials || '';
+
+        if (item.manufacturing) {
+            form.manufacturer.value = item.manufacturing.manufacturer || '';
+            form.files.value = item.manufacturing.productionFiles || '';
+        }
+
+        modal.classList.remove('hidden');
     }
 
     function renderCharacters(filter = '') {
@@ -222,11 +254,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         replaceContent(wrapper);
     }
 
-    // Modal Logic
+    // Modal Logic for Detail & Add/Edit
     const modal = document.getElementById('itemModal');
     const addModal = document.getElementById('addModal');
 
-    // Close events
     if (modal) {
         const closeBtn = modal.querySelector('.close-btn');
         if (closeBtn) closeBtn.addEventListener('click', () => modal.classList.add('hidden'));
@@ -235,12 +266,17 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (addModal) {
         document.getElementById('btnNewItem').addEventListener('click', () => {
+            // New Item Mode logic
+            const f = document.getElementById('addItemForm');
+            f.reset();
+            document.getElementById('editId').value = ""; // Clear ID
+            document.getElementById('formModeTitle').innerText = "Agregar Nuevo Artefacto";
             addModal.classList.remove('hidden');
         });
         document.getElementById('closeAddModal').addEventListener('click', () => addModal.classList.add('hidden'));
         addModal.addEventListener('click', (e) => { if (e.target === addModal) addModal.classList.add('hidden'); });
 
-        // Form Handle
+        // Form Handle (Add OR Edit)
         const form = document.getElementById('addItemForm');
         if (form) {
             form.addEventListener('submit', async (e) => {
@@ -249,14 +285,22 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 // UI Feedback
                 const btn = f.querySelector('button[type="submit"]');
-                const originalText = btn.textContext;
-                btn.textContent = "Guardando en Nube...";
+                const isEdit = document.getElementById('editId').value !== "";
+                btn.textContent = isEdit ? "Actualizando... ☁️" : "Guardando... ☁️";
                 btn.disabled = true;
 
-                const newId = Date.now().toString();
-                let imgUrl = "https://placehold.co/400x400/5D3A5D/FFF?text=" + encodeURIComponent(f.name.value);
+                const editIdStr = document.getElementById('editId').value;
+                const newId = isEdit ? editIdStr : Date.now().toString();
 
-                // Upload Image
+                // Keep old image logic if edit
+                let imgUrl = "https://placehold.co/400x400/5D3A5D/FFF?text=" + encodeURIComponent(f.name.value);
+                if (isEdit) {
+                    const existing = tablewareData.find(i => i.id === newId);
+                    // Preserve existing image if no new one selected, OR if new one selected we update URL below
+                    if (existing) imgUrl = existing.image;
+                }
+
+                // Upload Image (Overwrite/New)
                 if (f.imageUpload && f.imageUpload.files.length > 0) {
                     try {
                         await db.saveImage(newId, f.imageUpload.files[0]);
@@ -266,7 +310,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     }
                 }
 
-                // Construct New Object
+                // Construct Object
                 const newItem = {
                     id: newId,
                     name: f.name.value,
@@ -292,9 +336,16 @@ document.addEventListener('DOMContentLoaded', async () => {
                     image: imgUrl
                 };
 
-                // Add to Data
-                tablewareData.push(newItem);
-                await db.addItem(newItem);
+                // Save to DB & Local State
+                if (isEdit) {
+                    tablewareData = tablewareData.map(i => i.id === newId ? newItem : i);
+                    await db.updateItem(newItem);
+                    console.log("Updated", newItem);
+                } else {
+                    tablewareData.push(newItem);
+                    await db.addItem(newItem);
+                    console.log("Created", newItem);
+                }
 
                 // Refresh View
                 addModal.classList.add('hidden');
@@ -306,7 +357,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (activeTab === 'catalog') renderCatalog();
                 else if (activeTab === 'inventory') renderInventory();
 
-                alert('Ítem guardado exitosamente en Cloud ☁️');
+                alert(isEdit ? '¡Ítem actualizado!' : '¡Ítem guardado!');
             });
         }
     }
@@ -338,6 +389,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             let html = `
                 <div class="section-title">Especificaciones</div>
                 <div class="spec-row"><span>Medidas</span> <strong>${data.dimensions.height || '-'} x ${data.dimensions.width || '-'}</strong></div>
+                <div class="spec-row"><span>Profundidad</span> <strong>${data.dimensions.depth || '-'}</strong></div>
                 <div class="spec-row"><span>Capacidad</span> <strong>${data.dimensions.capacity || '-'}</strong></div>
                 <div class="spec-row"><span>Material</span> <strong>${data.materials}</strong></div>
 
