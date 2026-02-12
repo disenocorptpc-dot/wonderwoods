@@ -286,14 +286,35 @@ body {
     background-color: #fafafa;
 }
 
-/* --- Modal --- */
-.modal {
-    background: rgba(44, 24, 16, 0.8);
-    /* Darker backdrop */
-    backdrop-filter: blur(3px);
+.hidden {
+    display: none !important;
 }
 
-/* Vertical Modal Layout */
+/* Utility classes for modal overlay */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+#closeAddModal {
+    cursor: pointer;
+    position: relative;
+    z-index: 100;
+    font-size: 1.5rem;
+    line-height: 1;
+    background: transparent;
+    border: none;
+    color: white;
+}
+
+/* --- Modal Content (Vertical View) --- */
 .modal-content {
     background: #fff;
     box-shadow: 0 0 50px rgba(0, 0, 0, 0.4);
@@ -312,9 +333,10 @@ body {
 .modal-left {
     background: #f0f0f0;
     width: 100%;
-    height: 380px;
-    /* Fixed Height for Image */
+    height: 300px;
+    /* Reduced from 380px so text has more room */
     flex-shrink: 0;
+    /* Do not shrink */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -333,10 +355,15 @@ body {
 
 .modal-right {
     padding: 30px;
+    padding-bottom: 80px;
+    /* Extra space to ensure notes are visible */
     flex: 1;
+    /* Take remaining space */
     overflow-y: auto;
-    /* Bottom Scroll */
+    /* SCROLL HERE */
     width: 100%;
+    min-height: 0;
+    /* Important for flex scrolling */
 }
 
 .close-btn {
@@ -371,32 +398,4 @@ body {
     padding: 8px 0;
     border-bottom: 1px solid #e0e0e0;
     font-size: 0.95rem;
-}
-
-.hidden {
-    display: none !important;
-}
-
-/* Utility classes for modal overlay */
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-}
-
-#closeAddModal {
-    cursor: pointer;
-    position: relative;
-    z-index: 100;
-    font-size: 1.5rem;
-    line-height: 1;
-    background: transparent;
-    border: none;
-    color: white;
 }
