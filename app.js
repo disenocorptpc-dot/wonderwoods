@@ -281,7 +281,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const form = document.getElementById('addItemForm');
         form.reset();
 
-        const isCharMode = currentTab === 'characters' || (item && item.category === 'Personajes');
+        const isCharMode = activeTab === 'characters' || (item && item.category === 'Personajes');
         const techFields = document.getElementById('techFields');
         const charFields = document.getElementById('charFields');
 
