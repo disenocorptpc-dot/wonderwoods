@@ -70,8 +70,17 @@ body {
     margin-bottom: 2.5rem;
     display: flex;
     align-items: center;
+    justify-content: center;
+    /* CENTER LOGO */
     gap: 10px;
     letter-spacing: 1px;
+}
+
+.brand img {
+    height: 100px;
+    /* BIGGER LOGO */
+    width: auto;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
 
 .nav-btn {

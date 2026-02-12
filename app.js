@@ -391,53 +391,122 @@ document.addEventListener('DOMContentLoaded', async () => {
         const modalDetails = document.getElementById('modalDetails');
 
         modalTitle.innerText = data.name;
+        const logContainer = document.getElementById('logContainer'); // Assuming this element exists in your modal HTML
 
         // Handle Image
-        if (data.image.startsWith('DB_IMAGE:')) {
+        if (item.image.startsWith('DB_IMAGE:')) {
             modalImg.src = 'https://placehold.co/400x400/eee/999?text=Cargando...';
-            resolveImage(data).then(url => modalImg.src = url);
+            resolveImage(item).then(url => modalImg.src = url);
         } else {
-            modalImg.src = data.image;
+            modalImg.src = item.image;
         }
+        modalTitle.innerText = item.name;
 
-        if (isChar) {
-            let html = `<p style="margin-bottom:1rem; line-height:1.5;">${data.description}</p>`;
-            if (data.details) {
-                data.details.forEach(d => {
-                    html += `<div class="spec-row"><span>${d.label}</span> <strong>${d.value}</strong></div>`;
-                });
-            }
-            modalDetails.innerHTML = html;
-        } else {
-            let html = `
+        // Render Logs
+        renderLogs(item.logs || [], item.comments);
+
+        // Basic Info
+        let html = `
                 <div class="section-title" style="margin-top:0;">Estado</div>
                 <div class="spec-row">
                     <span>Disponibilidad</span> 
-                    <strong style="color:${data.stock.current < data.stock.minLevel ? '#d32f2f' : '#2e7d32'};">
-                        ${data.stock.status} (${data.stock.current} unid.)
+                    <strong style="color:${item.stock.current < item.stock.minLevel ? '#d32f2f' : '#2e7d32'};">
+                        ${item.stock.status} (${item.stock.current} unid.)
                     </strong>
                 </div>
 
                 <div class="section-title">Especificaciones</div>
                 <div class="spec-row">
                     <span>Medidas</span> 
-                    <strong>${data.dimensions.width || '-'} x ${data.dimensions.height || '-'} x ${data.dimensions.depth || '-'} cm</strong>
+                    <strong>${item.dimensions ? (item.dimensions.width || '-') + ' x ' + (item.dimensions.height || '-') + ' x ' + (item.dimensions.depth || '-') + ' cm' : '-'}</strong>
                 </div>
-                <!-- Combined Depth into Measures -->
-                <div class="spec-row"><span>Capacidad</span> <strong>${data.dimensions.capacity || '-'}</strong></div>
-                <div class="spec-row"><span>Material</span> <strong>${data.materials}</strong></div>
+                <div class="spec-row"><span>Capacidad</span> <strong>${item.dimensions?.capacity || '-'}</strong></div>
+                <div class="spec-row"><span>Material</span> <strong>${item.materials || '-'}</strong></div>
 
                 <div class="section-title">Producción</div>
-                <div class="spec-row"><span>Fabricante</span> <strong>${data.manufacturing.manufacturer || '-'}</strong></div>
-                <div class="spec-row"><span>Archivo CAD</span> <a href="${data.manufacturing.productionFiles}" target="_blank" rel="noopener noreferrer" style="color:var(--primary);">Descargar</a></div>
-                
-                <div class="section-title">Notas</div>
-                <p style="font-size:0.9rem; color:#666;">${data.comments}</p>
+                <div class="spec-row"><span>Fabricante</span> <strong>${item.manufacturing?.manufacturer || '-'}</strong></div>
+                <div class="spec-row"><span>Archivo CAD</span> ${item.manufacturing?.productionFiles ? `<a href="${item.manufacturing.productionFiles}" target="_blank" rel="noopener noreferrer" style="color:var(--primary);">Descargar</a>` : '-'}</div>
             `;
-            modalDetails.innerHTML = html;
-        }
+        modalDetails.innerHTML = html;
         modal.classList.remove('hidden');
     }
+
+    function renderLogs(logs, legacyComment) {
+        const container = document.getElementById('logContainer');
+        container.innerHTML = '';
+
+        let allLogs = [...(logs || [])];
+
+        // If legacy comment exists and not in logs, show it as first entry
+        if (legacyComment && allLogs.length === 0) {
+            allLogs.push({ date: new Date().toISOString(), author: 'Sistema', text: legacyComment });
+        }
+
+        if (allLogs.length === 0) {
+            container.innerHTML = '<p style="color:#999; text-align:center;">Sin comentarios aún.</p>';
+            return;
+        }
+
+        // Sort by date desc
+        allLogs.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        allLogs.forEach(log => {
+            const dateStr = new Date(log.date).toLocaleDateString() + ' ' + new Date(log.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const div = document.createElement('div');
+            div.style.marginBottom = '8px';
+            div.style.borderBottom = '1px solid #eee';
+            div.style.paddingBottom = '4px';
+            div.innerHTML = `
+                <div style="font-weight:bold; font-size:0.8rem; color:var(--primary); display:flex; justify-content:space-between;">
+                    <span>${log.author || 'Anónimo'}</span>
+                    <span style="font-weight:normal; color:#999;">${dateStr}</span>
+                </div>
+                <div style="color:#444;">${log.text}</div>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    // Add Log Listener
+    document.getElementById('btnAddLog').addEventListener('click', async () => {
+        if (!currentDetailItem) return;
+
+        const authorInput = document.getElementById('logAuthor');
+        const textInput = document.getElementById('logText');
+
+        const author = authorInput.value.trim();
+        const text = textInput.value.trim();
+
+        if (!text) {
+            alert("Escribe un mensaje");
+            return;
+        }
+        if (!author) {
+            alert("Escribe tu nombre (autor)");
+            return;
+        }
+
+        const newLog = {
+            date: new Date().toISOString(),
+            author: author,
+            text: text
+        };
+
+        // Update Local
+        if (!currentDetailItem.logs) currentDetailItem.logs = [];
+        currentDetailItem.logs.push(newLog);
+
+        // Update DB
+        try {
+            await db.updateItem(currentDetailItem);
+            renderLogs(currentDetailItem.logs);
+            textInput.value = '';
+            // Optional: keep author or clear
+        } catch (e) {
+            console.error(e);
+            alert("Error al guardar comentario");
+        }
+    });
 
     function replaceContent(element) {
         contentContainer.innerHTML = '';

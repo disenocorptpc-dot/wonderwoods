@@ -20,25 +20,23 @@
 <body>
 
     <aside class="sidebar">
-        <div class="brand">
-            <img src="logo.svg" alt="Wonderwoods" style="height: 40px; width: auto;">
+        <div class="brand" style="justify-content: center;">
+            <!-- Logo will be styled in CSS to be bigger -->
+            <img src="logo.svg" alt="Wonderwoods">
         </div>
         <nav>
             <button class="nav-btn active" data-tab="catalog">
-                <i class="fa-solid fa-utensils"></i> Catálogo Loza
+                <i class="fa-solid fa-utensils"></i> Fun Dishes
             </button>
             <button class="nav-btn" data-tab="characters">
-                <i class="fa-solid fa-ghost"></i> Personajes
-            </button>
-            <button class="nav-btn" data-tab="inventory">
-                <i class="fa-solid fa-boxes-stacked"></i> Inventario
+                <i class="fa-solid fa-tree"></i> Personajes
             </button>
         </nav>
     </aside>
 
     <main class="content-area">
         <header class="top-bar">
-            <h2 id="pageTitle">Catálogo de Loza</h2>
+            <h2 id="pageTitle">Fun Dishes</h2>
             <div style="display:flex; gap:10px; align-items:center;">
                 <div class="search-box">
                     <input type="text" id="searchInput" placeholder="Buscar...">
@@ -65,6 +63,25 @@
                 <button class="close-btn">&times;</button>
                 <h2 id="modalTitle" style="margin-bottom:1rem; color:#333;">Title</h2>
                 <div id="modalDetails"></div>
+
+                <!-- Bitácora Section -->
+                <div class="section-title">Bitácora de Comentarios</div>
+                <div id="logContainer"
+                    style="background:#f9f9f9; padding:10px; border:1px solid #eee; border-radius:4px; max-height:150px; overflow-y:auto; margin-bottom:10px; font-size:0.85rem;">
+                    <p style="color:#999; text-align:center;">Sin comentarios aún.</p>
+                </div>
+                <div style="display:flex; gap:5px; flex-direction:column;">
+                    <div style="display:flex; gap:5px;">
+                        <input type="text" id="logAuthor" placeholder="Tu Nombre (Autor)"
+                            style="flex:1; padding:6px; border:1px solid #ddd; border-radius:4px;">
+                    </div>
+                    <div style="display:flex; gap:5px;">
+                        <textarea id="logText" placeholder="Escribe un comentario..." rows="2"
+                            style="flex:1; padding:6px; border:1px solid #ddd; border-radius:4px; resize:none;"></textarea>
+                        <button id="btnAddLog"
+                            style="background:var(--primary); color:#fff; border:none; padding:0 15px; border-radius:4px; cursor:pointer;">Enviar</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -88,12 +105,13 @@
                     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
                         <div>
                             <label>Categoría</label>
-                            <input type="text" name="category" list="catOptions" style="width:100%; padding:8px;">
-                            <datalist id="catOptions">
-                                <option value="Fun Dishes">
-                                <option value="Main Courses">
-                                <option value="Drinkware">
-                            </datalist>
+                            <select name="category"
+                                style="width:100%; padding:8px; background:#fff; border:1px solid #ccc;">
+                                <option value="Fun Dishes">Fun Dishes</option>
+                                <option value="Props">Props / Utilería</option>
+                                <option value="Drinkware">Drinkware</option>
+                                <option value="General">General</option>
+                            </select>
                         </div>
                         <div>
                             <label>Stock Inicial</label>
