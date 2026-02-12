@@ -385,22 +385,26 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    function showModal(data, isChar = false) {
+    // --- Detail Modal with Logs ---
+    let currentDetailItem = null;
+
+    function showModal(item) {
+        currentDetailItem = item; // Critical for Logs
+        const modal = document.getElementById('itemModal');
         const modalImg = document.getElementById('modalImg');
         const modalTitle = document.getElementById('modalTitle');
         const modalDetails = document.getElementById('modalDetails');
 
-        modalTitle.innerText = data.name;
-        const logContainer = document.getElementById('logContainer'); // Assuming this element exists in your modal HTML
+        modalTitle.innerText = item.name;
+        // const logContainer = ... (already retrieved inside renderLogs)
 
         // Handle Image
-        if (item.image.startsWith('DB_IMAGE:')) {
+        if (item.image && item.image.startsWith('DB_IMAGE:')) {
             modalImg.src = 'https://placehold.co/400x400/eee/999?text=Cargando...';
             resolveImage(item).then(url => modalImg.src = url);
         } else {
-            modalImg.src = item.image;
+            modalImg.src = item.image || 'https://placehold.co/400x400?text=No+Img';
         }
-        modalTitle.innerText = item.name;
 
         // Render Logs
         renderLogs(item.logs || [], item.comments);

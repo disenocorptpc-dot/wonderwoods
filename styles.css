@@ -77,8 +77,8 @@ body {
 }
 
 .brand img {
-    height: 100px;
-    /* BIGGER LOGO */
+    height: 60px;
+    /* Reverted to safer size */
     width: auto;
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
