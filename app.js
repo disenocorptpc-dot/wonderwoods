@@ -178,6 +178,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (item.manufacturing) {
             form.manufacturer.value = item.manufacturing.manufacturer || '';
             form.files.value = item.manufacturing.productionFiles || '';
+        } else {
+            form.manufacturer.value = '';
+            form.files.value = '';
         }
 
         modal.classList.remove('hidden');
